@@ -18,7 +18,8 @@ To install the toolbox, simply add the danalyzer and subfolders to the MATLAB pa
 
 The GUI relies on EEGLAB functions for importing data. Slow oscillation-spindle coupling analysis relies on the circStats toolbox for working with coupling phase (i.e., circular) values. They can be found here:
 
-EEGLAB: [https://sccn.ucsd.edu/eeglab/download.php]()	
+EEGLAB: [https://sccn.ucsd.edu/eeglab/download.php]()
+
 circStats: [https://uk.mathworks.com/matlabcentral/fileexchange/10676-circular-statistics-toolbox-directional-statistics]()
 
 Make sure both are added to the MATLAB path before you start.
@@ -33,11 +34,11 @@ Example data, and a series of template scripts can be downloaded from here:
 
 ## "One-shot" installation
 
-If you are a new user, and want to downloaded danalyzer, the dependency toolboxes, and the example data and code all at once, you can simply download the script 'danalyzer_full_install.m' from here:
+If you are a new user, and want to downloaded danalyzer, the dependency toolboxes, and the example data and code all at once, you can simply download the script 'danalyzer\_full\_install.m' from here:
 
 [https://osf.io/hqbgt/]()
 
-Open the script in MATLAB, and change the file directory in Line 9 to the destination where you want everything to be installed. Click Run to perform the install. The script will attempt to download everything from the OSF repository, and extract the contents into the directory you indicated in Line 9 of the script. It will also take care of setting up the MATLAB path correctly.
+Open the script in MATLAB, and change the file directory in Line 10 to the destination where you want everything to be installed. Click Run to perform the install. The script will attempt to download everything from the OSF repository, and extract the contents into the directory you indicated in Line 10 of the script. It will also take care of setting up the MATLAB path correctly.
 
 This is a nice approach to users who are not familiar with MATLAB. Although this script will install the most recent version of danalyzer, an archived version of the other toolboxes will be installed. This means these toolboxes are not neccessarily up to date.
 
