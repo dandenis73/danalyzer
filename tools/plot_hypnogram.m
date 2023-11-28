@@ -25,11 +25,13 @@ end
 
 %%
 if isstruct(stages)
-    
+
     % Calculate lights out and lights on epoch number
     rec = datetime(stages.hdr.recStart, 'Format', 'HH:mm:ss.SSS');
     lout = datetime(stages.hdr.lOff, 'Format', 'HH:mm:ss.SSS');
     lon = datetime(stages.hdr.lOn, 'Format', 'HH:mm:ss.SSS');
+
+    if ~isempty(rec) && ~isempty(lout) && ~isempty(lon)
     
     diff = seconds(lout - rec);
     diff2 = seconds(lon - rec);
@@ -47,6 +49,11 @@ if isstruct(stages)
     lonSample  = diff2 * stages.hdr.srate;
     [~, lOffEpoch] = min(abs(stages.hdr.onsets - loutSample));
     [~, lOnEpoch]  = min(abs(stages.hdr.onsets - lonSample));
+
+    else
+        lOffEpoch = [];
+        lOnEpoch  = [];
+    end
     
     hypnoX = 1:1:length(stages.stages);
     hypnoY = stages.stages;

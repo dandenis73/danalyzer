@@ -90,7 +90,7 @@ end
 
 % If there is no recording start time, set lights off to epoch 1 and lights
 % on to final epoch
-if isempty(recStartTime)
+if isempty(recStartTime) || isempty(lOffTime) && isempty(lOnTime)
     lOffEpoch = 1;
     lOnEpoch  = length(stages);
     
@@ -188,8 +188,6 @@ elseif solMode == 4
 end
 
 %% Calculate sleep statistics
-
-
 
 tib  = (length(stages) * epochLength) / 60;
 tst  = ((sum(stages > 0 & stages  < 6)) * epochLength) / 60;
