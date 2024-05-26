@@ -193,7 +193,7 @@ tib  = (length(stages) * epochLength) / 60;
 tst  = ((sum(stages > 0 & stages  < 6)) * epochLength) / 60;
 sol  = (solEpoch * epochLength) / 60;
 slef = (tst / tib) * 100;
-waso = (sum(stages(solEpoch:end) == 0) * epochLength) / 60;
+waso = (sum(stages(solEpoch:find(stages > 0, 1, 'last')) == 0) * epochLength) / 60;
 
 for i = 0:6
     stageMinTib(i+1) = (sum(stages == i) * epochLength) / 60;
