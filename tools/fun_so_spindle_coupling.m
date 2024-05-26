@@ -1,4 +1,4 @@
-function [cpAll, cpMean, cpDiff, cpProb] = fun_so_spindle_coupling(soData, ssData, chans, srate, soEvents, ssEvents, varargin)
+function [cpAll, cpMean] = fun_so_spindle_coupling(soData, ssData, chans, srate, soEvents, ssEvents, varargin)
 % Slow oscillation-spindle coupling. Automatically detects coupling
 % events on multi-channel data and returns index of coupled and uncoupled
 % spindles as well as coupling parameters. Requires the circStats toolbox
@@ -38,12 +38,6 @@ function [cpAll, cpMean, cpDiff, cpProb] = fun_so_spindle_coupling(soData, ssDat
 % cpAll: A struct containing average slow oscillation-spindle coupling
 % features (e.g. coupled density, mean phase, coupling strength etc.) on
 % each channel
-%
-% cpDiff: A struct containing average slow oscillation and spindle
-% parameters for coupled and uncoupled events
-%
-% cpProb: A struct containing coupling probabilites for each channel
-%
 %%
 % Authors:  Dimitrios Mylonas
 %           Dan Denis
@@ -228,82 +222,10 @@ for chan_i = 1:nChannels
             
         end
         
-        %% Calculate coupling probability
-        
-        % Run only if called for as an optional input
-        if ~isempty(couplingProb) && any(~isnan(cpAll(chan_i).soID))
-            
-            for i = 1:nChannels
-                events = [{ssEvents(i).peakLoc}; {soEvents(i).startSample}; {soEvents(i).endSample}];
-                
-                % Simulate the SO signal
-                try
-                    
-                    tmp1 = zeros(couplingProb(1), 1);
-                    tmp1(events{2, i}) = 1;
-                    tmp2 = zeros(couplingProb(1), 1);
-                    tmp2(events{3, i}) = -1;
-                    so = tmp1 + tmp2;
-                    so = cumsum(so);
-                    
-                    % Simulate spindle peaks
-                    spindles = zeros(couplingProb(1), 1);
-                    tmp3 = events{1, i}(~isnan(events{1,i}));
-                    spindles(tmp3) = 1;
-                    
-                    % Calculate expected coupling events (by chance)
-                    expectedCouplingCount(i,:)  = length(find(spindles == 1)) * length(find(so == 1)) / couplingProb(1);
-                    expectedCouplingDensity(i,:) = expectedCouplingCount(i,:) / (couplingProb(1)/(srate * 60));
-                    
-                    % Calculate observed coupling events
-                    observedCouplingCount(i,:)   = length(find(spindles + so == 2));
-                    observedCouplingDensity(i,:) = observedCouplingCount(i,:) / (couplingProb(1)/(srate * 60));
-                    
-                    %Calculate the probability that the number of observed events is higher than chance
-                    for j = 1:couplingProb(2)
-                        y = circshift(spindles, randi(length(spindles)));
-                        randomCoupling(j, 1) = length(find(y + so == 2));
-                    end
-                    
-                    prob(i,:) = length(find(randomCoupling > observedCouplingCount(i,:))) / couplingProb(2);
-                    
-                catch % Return empty if there is an error
-                    cpProb(i).label = chans(i);
-                    cpProb(i).expectedCount   = NaN;
-                    cpProb(i).observedCount   = NaN;
-                    cpProb(i).expectedDensity = NaN;
-                    cpProb(i).observedDensity = NaN;
-                    cpProb(i).prob            = NaN;
-                    return
-                end
-                
-                % Store the output in a struct
-                cpProb(i).label           = chans{i};
-                cpProb(i).expectedCount   = expectedCouplingCount(i,:);
-                cpProb(i).observedCount   = observedCouplingCount(i,:);
-                cpProb(i).expectedDensity = expectedCouplingDensity(i,:);
-                cpProb(i).observedDensity = observedCouplingDensity(i,:);
-                cpProb(i).prob            = prob(i,:);
-            end
-            
-        % If not called, coupling probability output will be empty
-        else
-            cpProb(chan_i).label           = chans{chan_i};
-            cpProb(chan_i).expectedCount   = NaN;
-            cpProb(chan_i).observedCount   = NaN;
-            cpProb(chan_i).expectedDensity = NaN;
-            cpProb(chan_i).observedDensity = NaN;
-            cpProb(chan_i).prob            = NaN;
-        end
         %% Summarize coupling properties
         
         cpMean(chan_i) = couplingsum(cpAll(chan_i), srate, size(soData, 2));
-        
-        %% Get coupled and uncoupled spindle and SO parameters
-        
-        %cpDiff(chan_i) = couplingdiffs(cpAll(chan_i), ssEvents(chan_i), soEvents(chan_i), srate, size(ssData, 2));
-        
-        
+       
         %%
         detectTime = toc;
         disp([' Found ' num2str(cpMean(chan_i).couplingCount1) ' coupled spindles and '...
@@ -330,7 +252,6 @@ for chan_i = 1:nChannels
         cpAll(chan_i).soPhaseEnd   = [];
         
         cpMean(chan_i) = couplingsum(cpAll(chan_i), srate, size(soData, 2));
-        %cpDiff(chan_i) = couplingdiffs(cpAll(chan_i), ssEvents(chan_i), soEvents(chan_i), srate,  size(ssData, 2));
         
         disp('No spindles found')
     end
