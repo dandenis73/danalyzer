@@ -49,15 +49,14 @@ for i = 1:length(sleepstages)
         diff2 = diff2 + 86400;
     end
     
-    % if not lights off/on times provided, assume first and last to be lights
-    % off/on
-    if ~isnan(diff) && ~isnan(diff2)
+    % if not lights off/on times provided, assume first and last to be lights off/on
+    if ~isempty(diff) && ~isempty(diff2)
         loutSample = diff * sleepstages(i).hdr.srate;
         lonSample  = diff2 * sleepstages(i).hdr.srate;
-    elseif isnan(diff) && ~isnan(diff2)
+    elseif isempty(diff) && ~isempty(diff2)
         loutSample = 1;
         lonSample  = diff2 * sleepstages(i).hdr.srate;
-    elseif ~isnan(diff) && isnan(diff2)
+    elseif ~isempty(diff) && isempty(diff2)
         loutSample = diff * sleepstages(i).hdr.srate;
         lonSample  = (length(sleepstages(i).hdr.onsets) * sleepstages(i).hdr.win) * sleepstages(i).hdr.srate;
     else
