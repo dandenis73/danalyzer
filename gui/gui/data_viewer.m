@@ -3120,6 +3120,13 @@ if ~isempty(get(handles.stage_file_string, 'String'))
         end
     end
 end
+handles = dan_data_check(handles);
+
+[hObject, handles] = dan_plot_hypno(hObject, handles);
+[hObject, handles] = dan_plot_psg(hObject, handles);
+
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --------------------------------------------------------------------
@@ -3169,6 +3176,13 @@ if ~isempty(get(handles.stage_file_string, 'String'))
         end
     end
 end
+handles = dan_data_check(handles);
+
+[hObject, handles] = dan_plot_hypno(hObject, handles);
+[hObject, handles] = dan_plot_psg(hObject, handles);
+
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --------------------------------------------------------------------
@@ -3217,6 +3231,14 @@ if ~isempty(get(handles.stage_file_string, 'String'))
         end
     end
 end
+handles = dan_data_check(handles);
+
+[hObject, handles] = dan_plot_hypno(hObject, handles);
+[hObject, handles] = dan_plot_psg(hObject, handles);
+
+% Update handles structure
+guidata(hObject, handles);
+
 
 % --------------------------------------------------------------------
 function txt_score_export_Callback(hObject, eventdata, handles)
