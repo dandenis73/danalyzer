@@ -3187,32 +3187,32 @@ set(handles.stage_file_string, 'String', fullfile(scoreDir, scoreName));
 
 if ~isempty(get(handles.stage_file_string, 'String'))
     [~, ~, stageExt] = fileparts(get(handles.stage_file_string, 'String'));
-    
+
     if strcmpi(stageExt, '.mat')
-        
-        sleepstages = readtable(get(handles.stage_file_string, 'String'),...
-            'ReadVariableNames', 0);
-        
-        a = inputdlg({'Wake' 'Stage 1' 'Stage 2' 'Stage 3' 'Stage 4' 'REM' 'Movement' 'Unstaged'});
-        sleepstages = dan_convert_sleepstages(sleepstages, a);
-        
+        sleepstages = load(get(handles.stage_file_string, 'String'));
+        structField = fieldnames(sleepstages);
+        sleepstages = sleepstages.(structField{1});
+
         if all(handles.psg.stages.s1.stages == 7)
             handles.psg.stages.s1 = sleepstages;
         else
             a = questdlg('Score file already loaded. Do you want to overlay or replace?',...
                 'Import sleep scores', 'Overlay', 'Replace', 'Cancel', 'Overlay');
-            
+
             if strcmp(a, 'Overlay')
-                
+
                 scoreFields = regexp(fieldnames(handles.psg.stages), 's\d', 'match');
                 scoreFields(cellfun(@isempty, scoreFields)) = [];
                 handles.psg.stages.(['s' num2str(length(scoreFields)+1)]) = sleepstages;
-                
+
             elseif strcmp(a, 'Replace')
                 scoreFields = regexp(fieldnames(handles.psg.stages), 's\d', 'match');
                 scoreFields(cellfun(@isempty, scoreFields)) = [];
                 handles.psg.stages.(scoreFields{1}{1}) = sleepstages;
-                handles.psg.stages = rmfield(handles.psg.stages, [scoreFields{2:end}]);
+
+                if length(scoreFields) > 1
+                    handles.psg.stages = rmfield(handles.psg.stages, [scoreFields{2:end}]);
+                end
             end
         end
     end
