@@ -30,7 +30,12 @@ data2plot = handles.psg.data(:, plotParam.currSample:endSample);
 if ~isempty(data2plot)
     
     % Apply data changes as specified by the montage
-    [handles, data2plot, colorOrder] = dan_apply_montage(handles, data2plot);
+    if size(handles.psg.data,1) == size(handles.montage.chanList,2)
+        [handles, data2plot, colorOrder] = dan_apply_montage(handles, data2plot);
+    else
+        uiwait(msgbox("The dimension of the data does not match the number of channels specified in the montage.","Error","error"));
+        return
+    end
     
     % Scale the data
     [handles, data2plot] = dan_scale_psg_data(handles, data2plot);
