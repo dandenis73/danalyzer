@@ -11,4 +11,8 @@ psgOut.hdr.samples  = size(psgIn.trial{1, 1}, 2);
 
 psgOut.hdr.recStart = [];
 
-psgOut.chans  = struct('labels', psgIn.label);
+if ~iscolumn(psgIn.label)
+    psgIn.label = psgIn.label';
+end
+
+psgOut.chans  = struct('labels', psgIn.label, 'type', psgIn.hdr.chantype(ismember(psgIn.hdr.label, psgIn.label)));

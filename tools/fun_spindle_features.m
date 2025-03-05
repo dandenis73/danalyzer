@@ -1,4 +1,4 @@
-function [spindles] = fun_spindle_features(segments, srate, freqs, doPlot)
+function [spindles, segments] = fun_spindle_features(segments, srate, freqs, doPlot)
 % Calculate spindle features.
 %
 % Inputs:
@@ -63,7 +63,8 @@ for sp = 1: size(segments,1) % complete these operations for every segment in th
 
     % Keep the old matlab implementation because the new does not allow
     % tweaking the frequency resolution using Morlet wavelets
-    coefs = cwt(segments{sp,:},scales,'cmor1-1.5'); % Continuous wavelet transformation using complex Morlet 1-1.5
+    coefs = cwt(segments{sp, 1},scales,'cmor1-1.5'); % Continuous wavelet transformation using complex Morlet 1-1.5
+    segments{sp, 2} = coefs;
 
     %% Step 3: Find Peak frequency and sigma power density within spindle
     
@@ -150,7 +151,11 @@ for sp = 1: size(segments,1) % complete these operations for every segment in th
     [~,locs] = findpeaks(meanCoef(edge1:edge2));
     
     % Find zero crossings
-    zeroCross = [0,diff(sign(mean(real(coefs(edge1:edge2)),1)))];
+    %zeroCross = [0,diff(sign(mean(real(coefs(edge1:edge2)),1)))];
+    %zeroLocs = find(zeroCross < 0 | zeroCross > 0);
+
+    % Work on the real signal
+    zeroCross = [0, diff(sign(mean(real(coefs(:, edge1:edge2)))))];
     zeroLocs = find(zeroCross < 0 | zeroCross > 0);
     
     % Calculate number of cycles

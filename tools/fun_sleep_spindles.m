@@ -1,4 +1,4 @@
-function [spindlesAll, spindleSummary, params] = fun_sleep_spindles(data, chans, srate, varargin)
+function [spindlesAll, spindleSummary, segms, params] = fun_sleep_spindles(data, chans, srate, varargin)
 % Sleep spindle detection. Automatically detect sleep spindles in
 % multichannel data using a wavelet-based detection method. 
 %
@@ -42,6 +42,9 @@ function [spindlesAll, spindleSummary, params] = fun_sleep_spindles(data, chans,
 %
 % spindleSummary: A struct containing average spindle features 
 % (e.g. density, amplitude etc.) on each channel
+%
+% segms: Cell array containing the time series of each detected spindle
+% (useful for spindle visualisation)
 %
 % params: Parameters used for spindle detection
 %
@@ -176,7 +179,7 @@ if doPlot == 1
     subplot(313)
     
     % Pick a channel randomly, otherwise it can become too slow
-    chan_i=3;
+    chan_i=1;
     coef2plot = coef(:,chan_i);
     %% Check here the amplitude response of your wavelet
     fig.x = (1:1:nPoints)/srate;
@@ -309,7 +312,8 @@ for chan_i=1:nChannels % Loop for each signal
         end
 
         %% Characterize Spindles ******************************************
-        tmp = fun_spindle_features(segms, srate, [lowFreq highFreq], doPlot);
+        [tmp, segms] = fun_spindle_features(segms, srate, [lowFreq highFreq], doPlot);
+
         %% ****************************************************************
        
         % Save spindle feautures in structure
@@ -359,6 +363,8 @@ for chan_i=1:nChannels % Loop for each signal
         spindlesAll(chan_i).raisingSlope(shortIdx)   = [];
         spindlesAll(chan_i).droppingSlope(shortIdx)  = [];
         spindlesAll(chan_i).corrCoef(shortIdx)       = [];
+
+        segms(shortIdx, :) = [];
         
         %% Merge spindles that overlap 
         if length(spindlesAll(chan_i).startSample)>=2
@@ -404,6 +410,8 @@ for chan_i=1:nChannels % Loop for each signal
             spindlesAll(chan_i).raisingSlope(overlIdx+1)   = [];
             spindlesAll(chan_i).droppingSlope(overlIdx+1)  = [];
             spindlesAll(chan_i).corrCoef(overlIdx+1)       = [];
+
+            segms(overlIdx+1, :) = [];
         end
 
         %% Drop spindles that occur within 2 seconds of the start/end of record (edge artifacts)
@@ -429,6 +437,8 @@ for chan_i=1:nChannels % Loop for each signal
         spindlesAll(chan_i).corrCoef(edgeIdx)       = [];
       
         spindlesAll(chan_i).count  = length(spindlesAll(chan_i).detSample); % update spindle count
+
+        segms(edgeIdx, :) = [];
         
         % Calculate refractory period (sec)
         spindlesAll(chan_i).refrPeriod =  [nan,diff(spindlesAll(chan_i).peakLoc)]./srate;  

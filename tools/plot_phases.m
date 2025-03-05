@@ -69,3 +69,27 @@ end
 xx = 1*ones(size(t)) .* cos(t);
 yy = 1*ones(size(t)) .* sin(t);
 plot(xx, yy, 'Color','k','Linewidth',2);
+
+%Nicer labels
+axis_labels = {'0' '90' '180' '270'};
+
+old_text  = findall(gca, 'type', 'text');
+text_idx = ismember(get(old_text, 'String'), axis_labels);
+text_pos = [old_text(text_idx).Position];
+
+delete(old_text)
+text(gca, text_pos(1, 1), text_pos(1, 2), text_pos(1, 3), ['0' char(176)]);
+text(gca, text_pos(1, 4)-0.5, text_pos(1, 5), text_pos(1, 6), ['(-)180' char(176)]);
+text(gca, text_pos(1, 7)-0.18, text_pos(1, 8), text_pos(1, 9), ['-90' char(176)]);
+text(gca, text_pos(1, 10)-0.1, text_pos(1, 11)+0.05, text_pos(1, 12), ['90' char(176)]);
+
+
+
+
+
+
+
+
+
+
+

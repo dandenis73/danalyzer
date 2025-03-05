@@ -25,9 +25,15 @@ end
 if ~isempty(montage.hideChans)
     chanIdx = ismember({montage.chanList.labels}, montage.hideChans);
     montage.chanList(chanIdx) = [];
-    montage.reref(chanIdx) = [];
-    montage.filters(chanIdx,:) = [];
-    montage.notch(chanIdx) = [];
+    if ~isempty(montage.reref)
+        montage.reref(chanIdx) = [];
+    end
+    if ~isempty(montage.filters)
+        montage.filters(chanIdx,:) = [];
+    end
+    if ~isempty(montage.notch)
+        montage.notch(chanIdx) = [];
+    end
     data2plot(chanIdx, :) = [];
 end
 

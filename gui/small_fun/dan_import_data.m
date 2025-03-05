@@ -27,7 +27,7 @@ if ~isempty(dataString)
     elseif strcmpi(dataExt, '.vhdr')
         psg = pop_loadbv(dataPath, [dataName dataExt], [], []);
     elseif strcmpi(dataExt, '.mat')
-        psg = load(dataString);
+        psg = load(dataString);   
     end
         
     % Convert the data to a danalyzer matlab struct
@@ -41,6 +41,12 @@ if ~isempty(dataString)
         structFields = fieldnames(psg);
         psg = psg.(structFields{1});
         eegevent = [];
+
+        % Try to guess if this is FieldTrip
+        if isfield(psg, 'trial') && isfield(psg, 'label')
+            disp('I think this is FieldTrip data...')
+            psg = fieldtrip2danalyzer(psg);
+        end
     end
     
     % Prepare an empty montage based on the input data
