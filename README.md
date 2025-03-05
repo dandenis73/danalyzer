@@ -38,8 +38,8 @@ If you are a new user, and want to downloaded danalyzer, the dependency toolboxe
 
 [https://osf.io/hqbgt/]()
 
-Open the script in MATLAB, and change the file directory in Line 10 to the destination where you want everything to be installed. Click Run to perform the install. The script will attempt to download everything from the OSF repository, and extract the contents into the directory you indicated in Line 10 of the script. It will also take care of setting up the MATLAB path correctly.
+Open the script in MATLAB and Click Run to perform the install. A dialogue box will open that lets you set the destination of the install. The script will attempt to download everything from the OSF repository, and extract the contents into the destination you selected. It will also take care of setting up the MATLAB path correctly.
 
 This is a nice approach to users who are not familiar with MATLAB. Although this script will install the most recent version of danalyzer, an archived version of the other toolboxes will be installed. This means these toolboxes are not neccessarily up to date.
 
-Note you **must** have administrator privilages to be able to run this script. Has only been tested with MacOS.
+Note you **must** have administrator privilages to be able to run this script. Has been tested with MacOS and Windows 11
