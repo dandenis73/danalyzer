@@ -30,7 +30,7 @@ function [spindlesAll, spindleSummary, segms, params] = fun_sleep_spindles(data,
 % threshold. Default = 'median'
 %
 % 'SegmentDuration': [before after] seconds before and after spindle
-% detection for determining spindle features. Default [1 1]
+% detection for determining spindle features. Default [-1 1]
 %
 % 'Plot': Create plot for wavelet and each detected spindle. Default = 
 % false
@@ -338,12 +338,13 @@ for chan_i=1:nChannels % Loop for each signal
         spindlesAll(chan_i).startSample   = spindlesAll(chan_i).startSample + spindlesAll(chan_i).detSample - srate*segmDur(1)*ones(size([spindlesAll(chan_i).startSample]));
         spindlesAll(chan_i).endSample     = spindlesAll(chan_i).endSample   + spindlesAll(chan_i).detSample - srate*segmDur(1)*ones(size([spindlesAll(chan_i).endSample]));
         spindlesAll(chan_i).peakLoc       = spindlesAll(chan_i).peakLoc     + spindlesAll(chan_i).detSample - srate*segmDur(1)*ones(size([spindlesAll(chan_i).peakLoc]));
-        
+
         % Correlate raw and filtered signal
-        for spin_i = 1:length(segms)
-            c = corrcoef(data(chan_i, startSmp(spin_i):endSmp(spin_i)), coef(startSmp(spin_i):endSmp(spin_i), chan_i));
-            spindlesAll(chan_i).corrCoef(spin_i) = abs(c(1, 2));
-        end
+            for spin_i = 1:length(segms)
+                %c = corrcoef(data(chan_i, startSmp(spin_i):endSmp(spin_i)), coef(startSmp(spin_i):endSmp(spin_i), chan_i));
+                spindlesAll(chan_i).corrCoef(spin_i) = nan;
+                                %spindlesAll(chan_i).corrCoef(spin_i) = abs(c(1, 2));
+            end
         %% Discard spindles that last less than x samples
         shortIdx = [spindlesAll(chan_i).duration]<tThresh;
         spindlesAll(chan_i).detSample(shortIdx)      = [];

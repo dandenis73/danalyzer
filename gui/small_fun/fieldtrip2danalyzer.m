@@ -15,4 +15,13 @@ if ~iscolumn(psgIn.label)
     psgIn.label = psgIn.label';
 end
 
-psgOut.chans  = struct('labels', psgIn.label, 'type', psgIn.hdr.chantype(ismember(psgIn.hdr.label, psgIn.label)));
+% Try to add channel type
+if isfield(psgIn, 'elec')
+    chan_type = psgIn.elec.chantype(ismember(lower(psgIn.elec.label), lower(psgIn.label)));
+elseif isfield(psgIn, 'hdr')
+    chan_type = psgIn.hdr.chantype(ismember(lower(psgIn.hdr.label), lower(psgIn.label)));
+else
+    chan_type = repelem({'other'}, length(psgIn.label));
+end
+
+psgOut.chans  = struct('labels', psgIn.label, 'type', chan_type);

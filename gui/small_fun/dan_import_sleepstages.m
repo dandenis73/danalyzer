@@ -123,7 +123,7 @@ elseif isa(sleepstagesIN, 'cell')
     end
    
 else
-    sleepstagesOUT.stages = zeros(size(sleepstagesIN), 1);
+    sleepstagesOUT.stages = zeros(length(sleepstagesIN), 1);
     
     if isa(sleepstagesIN(1), 'double')
         

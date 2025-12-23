@@ -37,7 +37,7 @@ ftData.trial{1, 1} = psg.data;
 ftData.time{1, 1}  = linspace(0, (psg.hdr.samples-1)/psg.hdr.srate, psg.hdr.samples);
 
 % Channel label
-ftData.label = {psg.chans.labels};
+ftData.label = {psg.chans.labels}';
 
 
 
